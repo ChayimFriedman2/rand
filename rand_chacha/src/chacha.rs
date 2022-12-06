@@ -638,10 +638,10 @@ mod test {
         use rand_core::CryptoRng;
 
         let mut rng = ChaChaRng::from_seed(Default::default());
-        let dyn_rng = &mut rng.clone() as &mut dyn CryptoRng;
         let mut box_rng = Box::new(rng.clone());
+        let dyn_rng = &mut rng.clone() as &mut dyn CryptoRng;
         let exp = rng.next_u64();
-        assert_ne!(exp, dyn_rng.next_u64());
-        assert_ne!(exp, box_rng.next_u64());
+        assert_eq!(exp, dyn_rng.next_u64());
+        assert_eq!(exp, box_rng.next_u64());
     }
 }
