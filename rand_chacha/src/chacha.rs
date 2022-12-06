@@ -634,6 +634,7 @@ mod test {
     }
 
     #[test]
+    #[cfg(feature = "std")]
     fn test_trait_objects() {
         use rand_core::CryptoRng;
 
