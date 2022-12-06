@@ -102,7 +102,7 @@ macro_rules! init_gen {
         fn $fnn(b: &mut Bencher) {
             let mut rng = Pcg32::from_entropy();
             b.iter(|| {
-                let r2 = $gen::from_rng(&mut rng).unwrap();
+                let r2 = $gen::from_rng(&mut rng);
                 r2
             });
         }
