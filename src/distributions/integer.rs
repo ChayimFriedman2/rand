@@ -12,16 +12,13 @@ use crate::distributions::{Distribution, Standard};
 use crate::Rng;
 #[cfg(all(target_arch = "x86", feature = "simd_support"))]
 use core::arch::x86::__m512i;
-#[cfg(target_arch = "x86")]
-use core::arch::x86::{__m128i, __m256i};
+#[cfg(target_arch = "x86")] use core::arch::x86::{__m128i, __m256i};
 #[cfg(all(target_arch = "x86_64", feature = "simd_support"))]
 use core::arch::x86_64::__m512i;
-#[cfg(target_arch = "x86_64")]
-use core::arch::x86_64::{__m128i, __m256i};
-use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize,
-    NonZeroU128};
-#[cfg(feature = "simd_support")] use core::simd::*;
+#[cfg(target_arch = "x86_64")] use core::arch::x86_64::{__m128i, __m256i};
 use core::mem;
+use core::num::{NonZeroU128, NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize};
+#[cfg(feature = "simd_support")] use core::simd::*;
 
 impl Distribution<u8> for Standard {
     #[inline]

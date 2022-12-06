@@ -21,7 +21,7 @@ use rand::prelude::*;
 use rand::rngs::adapter::ReseedingRng;
 use rand::rngs::{mock::StepRng, OsRng};
 use rand_chacha::{ChaCha12Rng, ChaCha20Core, ChaCha20Rng, ChaCha8Rng};
-use rand_pcg::{Pcg32, Pcg64, Pcg64Mcg, Pcg64Dxsm};
+use rand_pcg::{Pcg32, Pcg64, Pcg64Dxsm, Pcg64Mcg};
 
 macro_rules! gen_bytes {
     ($fnn:ident, $gen:expr) => {
@@ -141,7 +141,6 @@ reseeding_bytes!(reseeding_chacha20_32k, 32);
 reseeding_bytes!(reseeding_chacha20_64k, 64);
 reseeding_bytes!(reseeding_chacha20_256k, 256);
 reseeding_bytes!(reseeding_chacha20_1M, 1024);
-
 
 macro_rules! threadrng_uint {
     ($fnn:ident, $ty:ty) => {

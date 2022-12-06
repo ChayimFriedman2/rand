@@ -8,7 +8,7 @@
 
 //! The standard RNG
 
-use crate::{CryptoRng, Error, RngCore, SeedableRng};
+use crate::{CryptoRng, RngCore, SeedableRng};
 
 pub(crate) use rand_chacha::ChaCha12Core as Core;
 
@@ -19,7 +19,7 @@ use rand_chacha::ChaCha12Rng as Rng;
 /// (meaning a cryptographically secure PRNG).
 ///
 /// The current algorithm used is the ChaCha block cipher with 12 rounds. Please
-/// see this relevant [rand issue] for the discussion. This may change as new 
+/// see this relevant [rand issue] for the discussion. This may change as new
 /// evidence of cipher security and performance becomes available.
 ///
 /// The algorithm is deterministic but should not be considered reproducible
@@ -48,11 +48,6 @@ impl RngCore for StdRng {
     fn fill_bytes(&mut self, dest: &mut [u8]) {
         self.0.fill_bytes(dest);
     }
-
-    #[inline(always)]
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
-        self.0.try_fill_bytes(dest)
-    }
 }
 
 impl SeedableRng for StdRng {
@@ -64,13 +59,12 @@ impl SeedableRng for StdRng {
     }
 
     #[inline(always)]
-    fn from_rng<R: RngCore>(rng: R) -> Result<Self, Error> {
-        Rng::from_rng(rng).map(StdRng)
+    fn from_rng<R: RngCore>(rng: R) -> Self {
+        StdRng(Rng::from_rng(rng))
     }
 }
 
 impl CryptoRng for StdRng {}
-
 
 #[cfg(test)]
 mod test {
@@ -90,7 +84,7 @@ mod test {
         let mut rng0 = StdRng::from_seed(seed);
         let x0 = rng0.next_u64();
 
-        let mut rng1 = StdRng::from_rng(rng0).unwrap();
+        let mut rng1 = StdRng::from_rng(rng0);
         let x1 = rng1.next_u64();
 
         assert_eq!([x0, x1], target);

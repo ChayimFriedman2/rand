@@ -8,14 +8,13 @@
 
 //! Basic floating-point number distributions
 
-use crate::distributions::utils::{IntAsSIMD, FloatAsSIMD, FloatSIMDUtils};
+use crate::distributions::utils::{FloatAsSIMD, FloatSIMDUtils, IntAsSIMD};
 use crate::distributions::{Distribution, Standard};
 use crate::Rng;
 use core::mem;
 #[cfg(feature = "simd_support")] use core::simd::*;
 
-#[cfg(feature = "serde1")]
-use serde::{Serialize, Deserialize};
+#[cfg(feature = "serde1")] use serde::{Deserialize, Serialize};
 
 /// A distribution to sample floating point numbers uniformly in the half-open
 /// interval `(0, 1]`, i.e. including 1 but not 0.
@@ -71,7 +70,6 @@ pub struct OpenClosed01;
 #[derive(Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde1", derive(Serialize, Deserialize))]
 pub struct Open01;
-
 
 // This trait is needed by both this lib and rand_distr hence is a hidden export
 #[doc(hidden)]
@@ -204,9 +202,15 @@ mod tests {
                 let mut zeros = StepRng::new(0, 0);
                 assert_eq!(zeros.sample::<$ty, _>(Open01), $ZERO + $EPSILON / two);
                 let mut one = StepRng::new(1 << 9 | 1 << (9 + 32), 0);
-                assert_eq!(one.sample::<$ty, _>(Open01), $EPSILON / two * $ty::splat(3.0));
+                assert_eq!(
+                    one.sample::<$ty, _>(Open01),
+                    $EPSILON / two * $ty::splat(3.0)
+                );
                 let mut max = StepRng::new(!0, 0);
-                assert_eq!(max.sample::<$ty, _>(Open01), $ty::splat(1.0) - $EPSILON / two);
+                assert_eq!(
+                    max.sample::<$ty, _>(Open01),
+                    $ty::splat(1.0) - $EPSILON / two
+                );
             }
         };
     }
@@ -246,9 +250,15 @@ mod tests {
                 let mut zeros = StepRng::new(0, 0);
                 assert_eq!(zeros.sample::<$ty, _>(Open01), $ZERO + $EPSILON / two);
                 let mut one = StepRng::new(1 << 12, 0);
-                assert_eq!(one.sample::<$ty, _>(Open01), $EPSILON / two * $ty::splat(3.0));
+                assert_eq!(
+                    one.sample::<$ty, _>(Open01),
+                    $EPSILON / two * $ty::splat(3.0)
+                );
                 let mut max = StepRng::new(!0, 0);
-                assert_eq!(max.sample::<$ty, _>(Open01), $ty::splat(1.0) - $EPSILON / two);
+                assert_eq!(
+                    max.sample::<$ty, _>(Open01),
+                    $ty::splat(1.0) - $EPSILON / two
+                );
             }
         };
     }

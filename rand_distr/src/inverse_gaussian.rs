@@ -1,7 +1,7 @@
 use crate::{Distribution, Standard, StandardNormal};
+use core::fmt;
 use num_traits::Float;
 use rand::Rng;
-use core::fmt;
 
 /// Error type returned from `InverseGaussian::new`
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -112,6 +112,9 @@ mod tests {
 
     #[test]
     fn inverse_gaussian_distributions_can_be_compared() {
-        assert_eq!(InverseGaussian::new(1.0, 2.0), InverseGaussian::new(1.0, 2.0));
+        assert_eq!(
+            InverseGaussian::new(1.0, 2.0),
+            InverseGaussian::new(1.0, 2.0)
+        );
     }
 }

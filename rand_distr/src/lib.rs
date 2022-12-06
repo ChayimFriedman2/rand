@@ -81,15 +81,12 @@
 //!   - [`InverseGaussian`] distribution
 //!   - [`NormalInverseGaussian`] distribution
 
-#[cfg(feature = "alloc")]
-extern crate alloc;
+#[cfg(feature = "alloc")] extern crate alloc;
 
-#[cfg(feature = "std")]
-extern crate std;
+#[cfg(feature = "std")] extern crate std;
 
 // This is used for doc links:
-#[allow(unused)]
-use rand::Rng;
+#[allow(unused)] use rand::Rng;
 
 pub use rand::distributions::{
     uniform, Alphanumeric, Bernoulli, BernoulliError, DistIter, Distribution, Open01, OpenClosed01,
@@ -173,10 +170,14 @@ mod test {
     macro_rules! assert_almost_eq {
         ($a:expr, $b:expr, $prec:expr) => {
             let diff = ($a - $b).abs();
-            assert!(diff <= $prec,
+            assert!(
+                diff <= $prec,
                 "assertion failed: `abs(left - right) = {:.1e} < {:e}`, \
                     (left: `{}`, right: `{}`)",
-                diff, $prec, $a, $b
+                diff,
+                $prec,
+                $a,
+                $b
             );
         };
     }

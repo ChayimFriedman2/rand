@@ -24,7 +24,6 @@
 //! `usize` indices are sampled as a `u32` where possible (also providing a
 //! small performance boost in some cases).
 
-
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 pub mod index;
@@ -218,7 +217,6 @@ pub trait SliceRandom {
     /// println!("{:?}", choices.choose_multiple_weighted(&mut rng, 2, |item| item.1).unwrap().collect::<Vec<_>>());
     /// ```
     /// [`choose_multiple`]: SliceRandom::choose_multiple
-    //
     // Note: this is feature-gated on std due to usage of f64::powf.
     // If necessary, we may use alloc+libm as an alternative (see PR #1089).
     #[cfg(feature = "std")]
@@ -392,7 +390,7 @@ pub trait IteratorRandom: Iterator + Sized {
             let (lower, _) = self.size_hint();
             if lower >= 2 {
                 let highest_selected = (0..lower)
-                    .filter(|ix| gen_index(rng, consumed+ix+1) == 0)
+                    .filter(|ix| gen_index(rng, consumed + ix + 1) == 0)
                     .last();
 
                 consumed += lower;
@@ -407,10 +405,10 @@ pub trait IteratorRandom: Iterator + Sized {
 
             let elem = self.nth(next);
             if elem.is_none() {
-                return result
+                return result;
             }
 
-            if gen_index(rng, consumed+1) == 0 {
+            if gen_index(rng, consumed + 1) == 0 {
                 result = elem;
             }
             consumed += 1;
@@ -494,7 +492,6 @@ pub trait IteratorRandom: Iterator + Sized {
         reservoir
     }
 }
-
 
 impl<T> SliceRandom for [T] {
     type Item = T;
@@ -621,7 +618,6 @@ impl<T> SliceRandom for [T] {
 
 impl<I> IteratorRandom for I where I: Iterator + Sized {}
 
-
 /// An iterator over multiple slice elements.
 ///
 /// This struct is created by
@@ -658,7 +654,6 @@ impl<'a, S: Index<usize, Output = T> + ?Sized + 'a, T: 'a> ExactSizeIterator
     }
 }
 
-
 // Sample a number uniformly between 0 and `ubound`. Uses 32-bit sampling where
 // possible, primarily in order to produce the same output on 32-bit and 64-bit
 // platforms.
@@ -670,7 +665,6 @@ fn gen_index<R: Rng + ?Sized>(rng: &mut R, ubound: usize) -> usize {
         rng.gen_range(0..ubound)
     }
 }
-
 
 #[cfg(test)]
 mod test {
@@ -932,33 +926,48 @@ mod test {
         }
 
         let reference = test_iter(0..9);
-        assert_eq!(test_iter([0, 1, 2, 3, 4, 5, 6, 7, 8].iter().cloned()), reference);
+        assert_eq!(
+            test_iter([0, 1, 2, 3, 4, 5, 6, 7, 8].iter().cloned()),
+            reference
+        );
 
         #[cfg(feature = "alloc")]
         assert_eq!(test_iter((0..9).collect::<Vec<_>>().into_iter()), reference);
         assert_eq!(test_iter(UnhintedIterator { iter: 0..9 }), reference);
-        assert_eq!(test_iter(ChunkHintedIterator {
-            iter: 0..9,
-            chunk_size: 4,
-            chunk_remaining: 4,
-            hint_total_size: false,
-        }), reference);
-        assert_eq!(test_iter(ChunkHintedIterator {
-            iter: 0..9,
-            chunk_size: 4,
-            chunk_remaining: 4,
-            hint_total_size: true,
-        }), reference);
-        assert_eq!(test_iter(WindowHintedIterator {
-            iter: 0..9,
-            window_size: 2,
-            hint_total_size: false,
-        }), reference);
-        assert_eq!(test_iter(WindowHintedIterator {
-            iter: 0..9,
-            window_size: 2,
-            hint_total_size: true,
-        }), reference);
+        assert_eq!(
+            test_iter(ChunkHintedIterator {
+                iter: 0..9,
+                chunk_size: 4,
+                chunk_remaining: 4,
+                hint_total_size: false,
+            }),
+            reference
+        );
+        assert_eq!(
+            test_iter(ChunkHintedIterator {
+                iter: 0..9,
+                chunk_size: 4,
+                chunk_remaining: 4,
+                hint_total_size: true,
+            }),
+            reference
+        );
+        assert_eq!(
+            test_iter(WindowHintedIterator {
+                iter: 0..9,
+                window_size: 2,
+                hint_total_size: false,
+            }),
+            reference
+        );
+        assert_eq!(
+            test_iter(WindowHintedIterator {
+                iter: 0..9,
+                window_size: 2,
+                hint_total_size: true,
+            }),
+            reference
+        );
     }
 
     #[test]
@@ -1260,9 +1269,13 @@ mod test {
         // Case 2: All of the weights are 0
         let choices = [('a', 0), ('b', 0), ('c', 0)];
 
-        assert_eq!(choices
-            .choose_multiple_weighted(&mut rng, 2, |item| item.1)
-            .unwrap().count(), 2);
+        assert_eq!(
+            choices
+                .choose_multiple_weighted(&mut rng, 2, |item| item.1)
+                .unwrap()
+                .count(),
+            2
+        );
 
         // Case 3: Negative weights
         let choices = [('a', -1), ('b', 1), ('c', 1)];
@@ -1275,9 +1288,13 @@ mod test {
 
         // Case 4: Empty list
         let choices = [];
-        assert_eq!(choices
-            .choose_multiple_weighted(&mut rng, 0, |_: &()| 0)
-            .unwrap().count(), 0);
+        assert_eq!(
+            choices
+                .choose_multiple_weighted(&mut rng, 0, |_: &()| 0)
+                .unwrap()
+                .count(),
+            0
+        );
 
         // Case 5: NaN weights
         let choices = [('a', core::f64::NAN), ('b', 1.0), ('c', 1.0)];

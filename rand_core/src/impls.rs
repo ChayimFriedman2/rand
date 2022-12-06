@@ -61,9 +61,11 @@ trait Observable: Copy {
 }
 impl Observable for u32 {
     type Bytes = [u8; 4];
+
     fn to_le_bytes(self) -> Self::Bytes {
         self.to_le_bytes()
     }
+
     fn as_byte_slice(x: &[Self]) -> &[u8] {
         let ptr = x.as_ptr() as *const u8;
         let len = x.len() * core::mem::size_of::<Self>();
@@ -72,9 +74,11 @@ impl Observable for u32 {
 }
 impl Observable for u64 {
     type Bytes = [u8; 8];
+
     fn to_le_bytes(self) -> Self::Bytes {
         self.to_le_bytes()
     }
+
     fn as_byte_slice(x: &[Self]) -> &[u8] {
         let ptr = x.as_ptr() as *const u8;
         let len = x.len() * core::mem::size_of::<Self>();

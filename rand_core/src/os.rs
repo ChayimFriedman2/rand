@@ -48,7 +48,12 @@ use getrandom::getrandom;
 #[derive(Clone, Copy, Debug, Default)]
 pub struct OsRng;
 
-impl CryptoRng for OsRng {}
+impl CryptoRng for OsRng {
+    fn crypto_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
+        getrandom(dest)?;
+        Ok(())
+    }
+}
 
 impl RngCore for OsRng {
     fn next_u32(&mut self) -> u32 {
@@ -60,14 +65,9 @@ impl RngCore for OsRng {
     }
 
     fn fill_bytes(&mut self, dest: &mut [u8]) {
-        if let Err(e) = self.try_fill_bytes(dest) {
+        if let Err(e) = self.crypto_fill_bytes(dest) {
             panic!("Error: {}", e);
         }
-    }
-
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
-        getrandom(dest)?;
-        Ok(())
     }
 }
 

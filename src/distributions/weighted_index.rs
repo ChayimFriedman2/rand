@@ -17,8 +17,7 @@ use core::fmt;
 // Note that this whole module is only imported if feature="alloc" is enabled.
 use alloc::vec::Vec;
 
-#[cfg(feature = "serde1")]
-use serde::{Serialize, Deserialize};
+#[cfg(feature = "serde1")] use serde::{Deserialize, Serialize};
 
 /// A distribution using weighted sampling of discrete items
 ///
@@ -262,7 +261,7 @@ mod test {
     }
 
     #[test]
-    fn test_accepting_nan(){
+    fn test_accepting_nan() {
         assert_eq!(
             WeightedIndex::new(&[core::f32::NAN, 0.5]).unwrap_err(),
             WeightedError::InvalidWeight,
@@ -284,7 +283,6 @@ mod test {
             WeightedError::InvalidWeight,
         )
     }
-
 
     #[test]
     #[cfg_attr(miri, ignore)] // Miri is too slow

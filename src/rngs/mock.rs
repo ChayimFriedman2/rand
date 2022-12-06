@@ -8,10 +8,9 @@
 
 //! Mock random number generator
 
-use rand_core::{impls, Error, RngCore};
+use rand_core::{impls, RngCore};
 
-#[cfg(feature = "serde1")]
-use serde::{Serialize, Deserialize};
+#[cfg(feature = "serde1")] use serde::{Deserialize, Serialize};
 
 /// A simple implementation of `RngCore` for testing purposes.
 ///
@@ -62,12 +61,6 @@ impl RngCore for StepRng {
     fn fill_bytes(&mut self, dest: &mut [u8]) {
         impls::fill_bytes_via_next(self, dest);
     }
-
-    #[inline]
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
-        self.fill_bytes(dest);
-        Ok(())
-    }
 }
 
 #[cfg(test)]
@@ -82,6 +75,5 @@ mod tests {
             bincode::deserialize(&bincode::serialize(&some_rng).unwrap()).unwrap();
         assert_eq!(some_rng.v, de_some_rng.v);
         assert_eq!(some_rng.a, de_some_rng.a);
-
     }
 }

@@ -9,9 +9,9 @@
 //! Math helper functions
 
 use crate::ziggurat_tables;
+use num_traits::Float;
 use rand::distributions::hidden_export::IntoFloat;
 use rand::Rng;
-use num_traits::Float;
 
 /// Calculates ln(gamma(x)) (natural logarithm of the gamma
 /// function) using the Lanczos approximation.
@@ -72,12 +72,8 @@ pub(crate) fn log_gamma<F: Float>(x: F) -> F {
 // size from force-inlining.
 #[inline(always)]
 pub(crate) fn ziggurat<R: Rng + ?Sized, P, Z>(
-    rng: &mut R,
-    symmetric: bool,
-    x_tab: ziggurat_tables::ZigTable,
-    f_tab: ziggurat_tables::ZigTable,
-    mut pdf: P,
-    mut zero_case: Z
+    rng: &mut R, symmetric: bool, x_tab: ziggurat_tables::ZigTable,
+    f_tab: ziggurat_tables::ZigTable, mut pdf: P, mut zero_case: Z,
 ) -> f64
 where
     P: FnMut(f64) -> f64,

@@ -14,8 +14,7 @@
 use std::fmt;
 use std::io::Read;
 
-use rand_core::{impls, Error, RngCore};
-
+use rand_core::{impls, RngCore};
 
 /// An RNG that reads random bytes straight from any type supporting
 /// [`std::io::Read`], for example files.
@@ -35,7 +34,7 @@ use rand_core::{impls, Error, RngCore};
 /// [`OsRng`]: crate::rngs::OsRng
 /// [`try_fill_bytes`]: RngCore::try_fill_bytes
 #[derive(Debug)]
-#[deprecated(since="0.8.4", note="removal due to lack of usage")]
+#[deprecated(since = "0.8.4", note = "removal due to lack of usage")]
 pub struct ReadRng<R> {
     reader: R,
 }
@@ -57,28 +56,19 @@ impl<R: Read> RngCore for ReadRng<R> {
     }
 
     fn fill_bytes(&mut self, dest: &mut [u8]) {
-        self.try_fill_bytes(dest).unwrap_or_else(|err| {
-            panic!(
-                "reading random bytes from Read implementation failed; error: {}",
-                err
-            )
-        });
-    }
-
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
         if dest.is_empty() {
-            return Ok(());
+            return;
         }
         // Use `std::io::read_exact`, which retries on `ErrorKind::Interrupted`.
         self.reader
             .read_exact(dest)
-            .map_err(|e| Error::new(ReadError(e)))
+            .expect("reading random bytes from Read implementation failed")
     }
 }
 
 /// `ReadRng` error type
 #[derive(Debug)]
-#[deprecated(since="0.8.4")]
+#[deprecated(since = "0.8.4")]
 pub struct ReadError(std::io::Error);
 
 impl fmt::Display for ReadError {
@@ -93,11 +83,8 @@ impl std::error::Error for ReadError {
     }
 }
 
-
 #[cfg(test)]
 mod test {
-    use std::println;
-
     use super::ReadRng;
     use crate::RngCore;
 
@@ -137,14 +124,13 @@ mod test {
     }
 
     #[test]
+    #[should_panic]
     fn test_reader_rng_insufficient_bytes() {
         let v = [1u8, 2, 3, 4, 5, 6, 7, 8];
         let mut w = [0u8; 9];
 
         let mut rng = ReadRng::new(&v[..]);
 
-        let result = rng.try_fill_bytes(&mut w);
-        assert!(result.is_err());
-        println!("Error: {}", result.unwrap_err());
+        rng.fill_bytes(&mut w);
     }
 }

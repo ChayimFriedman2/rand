@@ -10,11 +10,10 @@
 //! The binomial distribution.
 
 use crate::{Distribution, Uniform};
-use rand::Rng;
-use core::fmt;
 use core::cmp::Ordering;
-#[allow(unused_imports)]
-use num_traits::Float;
+use core::fmt;
+#[allow(unused_imports)] use num_traits::Float;
+use rand::Rng;
 
 /// The binomial distribution `Binomial(n, p)`.
 ///
@@ -224,7 +223,7 @@ impl Distribution<u64> for Binomial {
                                     break;
                                 }
                             }
-                        },
+                        }
                         Ordering::Greater => {
                             let mut i = y;
                             loop {
@@ -234,8 +233,8 @@ impl Distribution<u64> for Binomial {
                                     break;
                                 }
                             }
-                        },
-                        Ordering::Equal => {},
+                        }
+                        Ordering::Equal => {}
                     }
                     if v > f {
                         continue;

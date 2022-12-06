@@ -8,7 +8,7 @@
 
 //! A small fast RNG
 
-use rand_core::{Error, RngCore, SeedableRng};
+use rand_core::{RngCore, SeedableRng};
 
 #[cfg(target_pointer_width = "64")]
 type Rng = super::xoshiro256plusplus::Xoshiro256PlusPlus;
@@ -68,7 +68,7 @@ type Rng = super::xoshiro128plusplus::Xoshiro128PlusPlus;
 /// // Create small, cheap to initialize and fast RNGs with random seeds.
 /// // One can generally assume this won't fail.
 /// let rngs: Vec<SmallRng> = (0..10)
-///     .map(|_| SmallRng::from_rng(&mut thread_rng).unwrap())
+///     .map(|_| SmallRng::from_rng(&mut thread_rng))
 ///     .collect();
 /// ```
 ///
@@ -95,11 +95,6 @@ impl RngCore for SmallRng {
     fn fill_bytes(&mut self, dest: &mut [u8]) {
         self.0.fill_bytes(dest);
     }
-
-    #[inline(always)]
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
-        self.0.try_fill_bytes(dest)
-    }
 }
 
 impl SeedableRng for SmallRng {
@@ -111,8 +106,8 @@ impl SeedableRng for SmallRng {
     }
 
     #[inline(always)]
-    fn from_rng<R: RngCore>(rng: R) -> Result<Self, Error> {
-        Rng::from_rng(rng).map(SmallRng)
+    fn from_rng<R: RngCore>(rng: R) -> Self {
+        SmallRng(Rng::from_rng(rng))
     }
 
     #[inline(always)]

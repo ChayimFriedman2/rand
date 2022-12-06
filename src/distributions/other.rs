@@ -8,22 +8,17 @@
 
 //! The implementations of the `Standard` distribution for other built-in types.
 
+#[cfg(feature = "alloc")] use alloc::string::String;
 use core::char;
 use core::num::Wrapping;
-#[cfg(feature = "alloc")]
-use alloc::string::String;
 
+#[cfg(feature = "alloc")] use crate::distributions::DistString;
 use crate::distributions::{Distribution, Standard, Uniform};
-#[cfg(feature = "alloc")]
-use crate::distributions::DistString;
 use crate::Rng;
 
-#[cfg(feature = "serde1")]
-use serde::{Serialize, Deserialize};
 use core::mem::{self, MaybeUninit};
-#[cfg(feature = "simd_support")]
-use core::simd::*;
-
+#[cfg(feature = "simd_support")] use core::simd::*;
+#[cfg(feature = "serde1")] use serde::{Deserialize, Serialize};
 
 // ----- Sampling distributions -----
 
@@ -68,7 +63,6 @@ use core::simd::*;
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(feature = "serde1", derive(Serialize, Deserialize))]
 pub struct Alphanumeric;
-
 
 // ----- Implementations of distributions -----
 
@@ -273,7 +267,6 @@ where Standard: Distribution<T>
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -312,9 +305,8 @@ mod tests {
         let mut incorrect = false;
         for _ in 0..100 {
             let c: char = rng.sample(Alphanumeric).into();
-            incorrect |= !(('0'..='9').contains(&c) ||
-                           ('A'..='Z').contains(&c) ||
-                           ('a'..='z').contains(&c) );
+            incorrect |=
+                !(('0'..='9').contains(&c) || ('A'..='Z').contains(&c) || ('a'..='z').contains(&c));
         }
         assert!(!incorrect);
     }

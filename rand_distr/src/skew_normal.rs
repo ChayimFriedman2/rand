@@ -204,21 +204,18 @@ mod tests {
 
     #[test]
     fn skew_normal_value_stability() {
-        test_samples(
-            SkewNormal::new(0.0, 1.0, 0.0).unwrap(),
-            0f32,
-            &[-0.11844189, 0.781378, 0.06563994, -1.1932899],
-        );
-        test_samples(
-            SkewNormal::new(0.0, 1.0, 0.0).unwrap(),
-            0f64,
-            &[
-                -0.11844188827977231,
-                0.7813779637772346,
-                0.06563993969580051,
-                -1.1932899004186373,
-            ],
-        );
+        test_samples(SkewNormal::new(0.0, 1.0, 0.0).unwrap(), 0f32, &[
+            -0.11844189,
+            0.781378,
+            0.06563994,
+            -1.1932899,
+        ]);
+        test_samples(SkewNormal::new(0.0, 1.0, 0.0).unwrap(), 0f64, &[
+            -0.11844188827977231,
+            0.7813779637772346,
+            0.06563993969580051,
+            -1.1932899004186373,
+        ]);
         test_samples(
             SkewNormal::new(core::f64::INFINITY, 1.0, 0.0).unwrap(),
             0f64,
@@ -256,6 +253,9 @@ mod tests {
 
     #[test]
     fn skew_normal_distributions_can_be_compared() {
-        assert_eq!(SkewNormal::new(1.0, 2.0, 3.0), SkewNormal::new(1.0, 2.0, 3.0));
+        assert_eq!(
+            SkewNormal::new(1.0, 2.0, 3.0),
+            SkewNormal::new(1.0, 2.0, 3.0)
+        );
     }
 }

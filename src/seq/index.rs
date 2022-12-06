@@ -16,14 +16,15 @@
 use alloc::collections::BTreeSet;
 #[cfg(feature = "std")] use std::collections::HashSet;
 
-#[cfg(feature = "std")]
-use crate::distributions::WeightedError;
+#[cfg(feature = "std")] use crate::distributions::WeightedError;
 
 #[cfg(feature = "alloc")]
-use crate::{Rng, distributions::{uniform::SampleUniform, Distribution, Uniform}};
+use crate::{
+    distributions::{uniform::SampleUniform, Distribution, Uniform},
+    Rng,
+};
 
-#[cfg(feature = "serde1")]
-use serde::{Serialize, Deserialize};
+#[cfg(feature = "serde1")] use serde::{Deserialize, Serialize};
 
 /// A vector of indices.
 ///
@@ -88,8 +89,8 @@ impl IndexVec {
 }
 
 impl IntoIterator for IndexVec {
-    type Item = usize;
     type IntoIter = IndexVecIntoIter;
+    type Item = usize;
 
     /// Convert into an iterator over the indices as a sequence of `usize` values
     #[inline]
@@ -196,7 +197,6 @@ impl Iterator for IndexVecIntoIter {
 
 impl ExactSizeIterator for IndexVecIntoIter {}
 
-
 /// Randomly sample exactly `amount` distinct indices from `0..length`, and
 /// return them in random order (fully shuffled).
 ///
@@ -290,7 +290,6 @@ where
     }
 }
 
-
 /// Randomly sample exactly `amount` distinct indices from `0..length`, and
 /// return them in an arbitrary order (there is no guarantee of shuffling or
 /// ordering). The weights are to be provided by the input function `weights`,
@@ -331,8 +330,8 @@ where
     }
     impl<N> Ord for Element<N> {
         fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-             // partial_cmp will always produce a value,
-             // because we check that the weights are not nan
+            // partial_cmp will always produce a value,
+            // because we check that the weights are not nan
             self.partial_cmp(other).unwrap()
         }
     }
@@ -361,8 +360,7 @@ where
     // keys. Do this by using `select_nth_unstable` to put the elements with
     // the *smallest* keys at the beginning of the list in `O(n)` time, which
     // provides equivalent information about the elements with the *greatest* keys.
-    let (_, mid, greater)
-        = candidates.select_nth_unstable(length.as_usize() - amount.as_usize());
+    let (_, mid, greater) = candidates.select_nth_unstable(length.as_usize() - amount.as_usize());
 
     let mut result: Vec<N> = Vec::with_capacity(amount.as_usize());
     result.push(mid.index);
@@ -436,8 +434,9 @@ where R: Rng + ?Sized {
     IndexVec::from(indices)
 }
 
-trait UInt: Copy + PartialOrd + Ord + PartialEq + Eq + SampleUniform
-    + core::hash::Hash + core::ops::AddAssign {
+trait UInt:
+    Copy + PartialOrd + Ord + PartialEq + Eq + SampleUniform + core::hash::Hash + core::ops::AddAssign
+{
     fn zero() -> Self;
     fn one() -> Self;
     fn as_usize(self) -> usize;
@@ -516,15 +515,18 @@ mod test {
     #[cfg(feature = "serde1")]
     fn test_serialization_index_vec() {
         let some_index_vec = IndexVec::from(vec![254_usize, 234, 2, 1]);
-        let de_some_index_vec: IndexVec = bincode::deserialize(&bincode::serialize(&some_index_vec).unwrap()).unwrap();
+        let de_some_index_vec: IndexVec =
+            bincode::deserialize(&bincode::serialize(&some_index_vec).unwrap()).unwrap();
         match (some_index_vec, de_some_index_vec) {
             (IndexVec::U32(a), IndexVec::U32(b)) => {
                 assert_eq!(a, b);
-            },
+            }
             (IndexVec::USize(a), IndexVec::USize(b)) => {
                 assert_eq!(a, b);
-            },
-            _ => {panic!("failed to seralize/deserialize `IndexVec`")}
+            }
+            _ => {
+                panic!("failed to seralize/deserialize `IndexVec`")
+            }
         }
     }
 
@@ -602,7 +604,7 @@ mod test {
                     for &i in &indices {
                         assert!((i as usize) < len);
                     }
-                },
+                }
                 IndexVec::USize(_) => panic!("expected `IndexVec::U32`"),
             }
         }

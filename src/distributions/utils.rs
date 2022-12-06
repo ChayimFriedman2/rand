@@ -10,7 +10,6 @@
 
 #[cfg(feature = "simd_support")] use core::simd::*;
 
-
 pub(crate) trait WideningMultiply<RHS = Self> {
     type Output;
 
@@ -370,7 +369,6 @@ macro_rules! scalar_float_impl {
 
 scalar_float_impl!(f32, u32);
 scalar_float_impl!(f64, u64);
-
 
 #[cfg(feature = "simd_support")]
 macro_rules! simd_impl {
